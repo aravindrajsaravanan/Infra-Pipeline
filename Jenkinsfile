@@ -12,14 +12,14 @@ pipeline{
         }
         stage ('Terraform init'){
             steps{
-                dir('${TF_WORDIR}'){
+                dir("environments/${env.BRANCH_NAME}"){
                     sh 'terraform init'
                 }
             }
         }
         stage ('Terraform plan'){
             steps{
-                dir('${TF_WORDIR}'){
+                dir("environments/${env.BRANCH_NAME}"){
                     sh 'terraform plan -out=tfplan'
                     sh 'terraform show -no-color tfplan>tfplan.txt'
                     sh 'cat tfplan.txt'
@@ -32,7 +32,7 @@ pipeline{
                 expression {env.BRANCH_NAME == 'production'}
             }*/
             steps{
-                input message: "approvee the deployment to production?", ok: 'Deploy'
+                input message: "approve the deployment to production?", ok: 'Deploy'
             }
         }
     }
