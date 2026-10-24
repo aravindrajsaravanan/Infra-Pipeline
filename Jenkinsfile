@@ -1,8 +1,7 @@
 pipeline{
     agent any
     environment{
-        ENV="${env.BRANCH_NAME}"
-        TF_WORDIR="environments/${env.BRANCH_NAME}"
+        TF_WORKDIR = "environments/${env.BRANCH_NAME}"
     }
     stages{
         stage('checkout'){
@@ -12,14 +11,14 @@ pipeline{
         }
         stage ('Terraform init'){
             steps{
-                dir("environments/${env.BRANCH_NAME}"){
+                dir(env.TF_WORKDIR){
                     sh 'terraform init'
                 }
             }
         }
         stage ('Terraform plan'){
             steps{
-                dir("environments/${env.BRANCH_NAME}"){
+                dir(env.TF_WORKDIR){
                     sh 'terraform plan -out=tfplan'
                     sh 'terraform show -no-color tfplan>tfplan.txt'
                     sh 'cat tfplan.txt'
@@ -28,14 +27,15 @@ pipeline{
         }
         stage ('Approve'){
             when{
-                expression {env.BRANCH_NAME == 'production'}
+                expression {env.BRANCH_NAME == 'prod'}
+            }
             steps{
                 input message: "approve the deployment to production?", ok: 'Deploy'
             }
         }
         stage('apply'){
             steps{
-                dir("environments/${env.BRANCH_NAME}"){
+                dir(env.TF_WORKDIR){
                     sh 'terraform apply tfplan'
                 }
             }
