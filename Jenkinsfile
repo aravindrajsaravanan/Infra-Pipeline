@@ -35,5 +35,12 @@ pipeline{
                 input message: "approve the deployment to production?", ok: 'Deploy'
             }
         }
+        stage('apply'){
+            steps{
+                dir("environments/${env.BRANCH_NAME}"){
+                    sh 'terraform apply tfplan'
+                }
+            }
+        }
     }
 }
