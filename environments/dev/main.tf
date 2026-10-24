@@ -6,7 +6,7 @@ module "vpc" {
   subnet_avaliability_zone = "${var.aws_region}a"
   env                      = "dev"
 }
-*/
+
 module "ec2" {
   source        = "../../modules/ec2"
   ami_id        = "ami-03d3019940b16a1b2"
@@ -15,3 +15,4 @@ module "ec2" {
   ec2_count     = 0
   env           = "dev"
 }
+*/
